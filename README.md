@@ -44,21 +44,23 @@ O ciclo de vida da aplicação segue quatro etapas principais:
 ---
 
 ## Estrutura de repositórios
-<p>
- Projeto/                # Repositório central do projeto<br>
- ├── Repositórios/<><br>
- │   ├── pipelines-templates/<<br>>
- |   |     ├── buildAndPush.yml<<br>>
- |   |     └── checkoutAndCommit.yml<<br>>
- └── ├── <nome do serviço>-service<<br>>
-           └── azure-pipeline.yaml<<br>>
+
+```text
+Projeto/                # Repositório central do projeto
+├── Repositórios/
+│   ├── pipelines-templates/
+│   │   ├── buildAndPush.yml
+│   │   └── checkoutAndCommit.yml
+│   └── <nome do serviço>-service/
+│       └── azure-pipeline.yaml
 
 GitOps/
 ├── manifestos/
 │   ├── <nome do serviço>-deployment.yaml
 │   ├── <nome do serviço>-service.yaml
-└── └── <nome do serviço>-ingress.yaml
-</p>
+│   └── <nome do serviço>-ingress.yaml
+
+```
 
 ---
 
