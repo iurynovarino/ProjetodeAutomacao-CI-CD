@@ -40,3 +40,50 @@ O ciclo de vida da aplicação segue quatro etapas principais:
 <p align="center">
 <img src="./images/DevOps.jpg">
 </p>
+
+---
+
+## Estrutura de repositórios
+<p>
+ Projeto/                # Repositório central do projeto<br>
+ ├── Repositórios/<><br>
+ │   ├── pipelines-templates/<<br>>
+ |   |     ├── buildAndPush.yml<<br>>
+ |   |     └── checkoutAndCommit.yml<<br>>
+ └── ├── <nome do serviço>-service<<br>>
+           └── azure-pipeline.yaml<<br>>
+
+GitOps/
+├── manifestos/
+│   ├── <nome do serviço>-deployment.yaml
+│   ├── <nome do serviço>-service.yaml
+└── └── <nome do serviço>-ingress.yaml
+</p>
+
+---
+
+## Configuração do service connections
+
+### Passo 1: acesssar a configuração do seu projeto
+
+<p align="center">
+    <img src="./images/img1.jpg">
+</p>
+
+### Passo 2: no menu a esquerda clicar em service connections
+
+<p align="center">
+    <img src="./images/img2.jpg">
+</p>
+
+### Passo 3: procurar docker registry e depois clicar no botão next
+
+<p align="center">
+    <img src="./images/img3.jpg">
+</p>
+
+### Passo 4: preencher as informações conforme a imagem abaixo (será solicitado autenticação com a sua conta azure) e depois é só salvar
+
+<p align="center">
+    <img src="./images/img4.jpg">
+</p>
