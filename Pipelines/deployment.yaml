@@ -1,0 +1,29 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: <nome do serviço>-service-deployment
+  namespace: <nome do projeto>-service
+spec:
+  selector:
+    matchLabels:
+      app: <nome do serviço>-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: <nome do serviço>-service
+    spec:
+      nodeSelector:
+        agentpool: nodepool1 #Aqui define o node pool onde o pod será alocado, deverá estar de acordo com a configuração do cluster
+      containers:
+      - name: <nome do serviço>-service
+        image: <nome do container registry>.azurecr.io/<nome do serviço>-service:20250613.1 #Aqui busca o container no ACR com a tag referente a build
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 0.01
+            memory: 512Mi
+          limits:
+            cpu: 0.02
+            memory: 768Mi

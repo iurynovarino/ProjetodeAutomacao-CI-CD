@@ -1,0 +1,54 @@
+trigger:
+  branches:
+    include:
+      - homolog # Ramo que irá disparar a pipeline
+resources:
+  repositories:
+    - repository: template
+      type: git
+      name: <nome do projeto>/template
+    - repository: k8s-manifest-homolog
+      type: git
+      name: GitOps/k8s-manifest-homolog # Repositório onde estão os manifests do Kubernetes para o ambiente de homologação, separado do ambiente que os Devs trabalham.
+variables:
+  tag: '$(Build.BuildNumber)'
+  servicename: '<nome do serviço>'
+  manifestfolder: 'manifest' # nome da pasta em k8s-manifests para enviar o deployment.yaml, service.yaml e ingress. Usado no template.
+  containerRegistry: '<nome do projeto>acrhml' #Esse nome é a service conenection do Azure Container Registry, isso deve ser configurado nas configurações do projeto no Azure DevOps.
+  repository: 'k8s-manifest-homolog'
+  dockerRegistry: '<nome do container registry>.azurecr.io'
+stages:
+  - stage: Build
+    displayName: "Build And Push Docker Image"
+    jobs:  
+      - job: BuildAndPush
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - template: buildAndPush.yml@template
+            parameters:
+              repository: "$(servicename)-service"
+              Dockerfile: "$(servicename).dockerfile"
+              WorkingDirectory: 'archon.service.$(servicename).WebApi'
+              containerRegistry: "$(containerRegistry)"
+              tags: |
+                $(tag)
+                latest                
+  - stage: CheckoutAndCommit
+    displayName: "Change Deployment image tag"
+    jobs:              
+      - job: Commit_yaml_File
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - template: checkoutAndcommit.yml@template
+            parameters:
+              servicename: '$(servicename)'
+              tags: $(tag)
+              BuildNumber: '$(Build.BuildNumber)'
+              DefaultWorkingDirectory: '$(System.DefaultWorkingDirectory)'
+              repository: k8s-manifest-homolog
+              dockerRegistry: '$(dockerRegistry)'
+              manifestfolder: '$(manifestfolder)'            
+          
+          

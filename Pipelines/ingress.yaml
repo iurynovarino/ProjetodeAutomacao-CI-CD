@@ -1,0 +1,34 @@
+#Esse arquivo cria o Ingress para o serviço, definindo as regras de roteamento e as anotações necessárias para o NGINX Ingress Controller.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: <nome do serviço>-service-ingress
+  namespace: <nome do projeto>-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: 'true'
+    nginx.ingress.kubernetes.io/cors-allow-headers: 'Authorization, X-Forwarded-For, X-app123-XPTO, X-Highlight-Request, Content-Type, Local-Server, x-requested-with, X-Trail-Register-Count, x-signalr-user-agent'
+    nginx.ingress.kubernetes.io/cors-allow-methods: PUT, GET, POST, OPTIONS, DELETE, PATCH
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://*.exemplo.com.br"
+    nginx.ingress.kubernetes.io/cors-expose-headers: '*, X-CustomResponseHeader'
+    nginx.ingress.kubernetes.io/cors-max-age: '600'
+    nginx.ingress.kubernetes.io/enable-cors: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: '0'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '600'
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    nginx.ingress.kubernetes.io/default-backend: nginx-ingress-ingress-nginx-controller
+spec:
+  rules:
+  - host: <nome do serviço>-service-hml.exemplo.com.br #Eu gosto de usar essa nomenclatura para diferenciar os ambientes
+    http:
+        paths:
+        - pathType: Prefix
+          path: /(.*)
+          backend:
+            service:
+              name: <nome do serviço>-service #Lembrando que o nome do serviço deve ser igual ao definido no service.yaml
+              port: 
+                name: "<nome do serviço>-port" #Lembrando que o nome da porta deve ser igual ao definido no service.yaml
