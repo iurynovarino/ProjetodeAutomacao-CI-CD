@@ -1,0 +1,18 @@
+parameters:
+  serviceName: ''
+  acrName: ''
+  dockerfilePath: 'Dockerfile'
+  contextPath: '.'
+  imageTag: '$(Build.BuildId)'
+
+steps:
+- task: Docker@2
+  displayName: Build and Push image
+  inputs:
+    containerRegistry: '${{ parameters.acrName }}'
+    repository: '${{ parameters.serviceName }}'
+    command: buildAndPush
+    Dockerfile: '${{ parameters.dockerfilePath }}'
+    buildContext: '${{ parameters.contextPath }}'
+    tags: |
+      ${{ parameters.imageTag }}

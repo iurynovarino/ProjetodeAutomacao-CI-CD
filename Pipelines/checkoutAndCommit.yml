@@ -1,0 +1,31 @@
+parameters:
+  gitRepoUrl: ''
+  gitBranch: 'main'
+  serviceName: ''
+  imageTag: ''
+  valuesPath: 'values'
+  gitUserName: 'azure-devops'
+  gitUserEmail: 'azure-devops@local'
+
+steps:
+- checkout: none
+
+- script: |
+    git clone ${{ parameters.gitRepoUrl }}
+    cd $(basename ${{ parameters.gitRepoUrl }} .git)
+    git checkout ${{ parameters.gitBranch }}
+
+    FILE=${{ parameters.valuesPath }}/${{ parameters.serviceName }}.yaml
+
+    echo "Atualizando tag da imagem em $FILE"
+    sed -i "s/tag:.*/tag: ${{ parameters.imageTag }}/" $FILE
+
+    git config user.name "${{ parameters.gitUserName }}"
+    git config user.email "${{ parameters.gitUserEmail }}"
+
+    git add $FILE
+    git commit -m "chore(${{
+      parameters.serviceName
+    }}): bump image tag to ${{ parameters.imageTag }}"
+    git push
+  displayName: Update Helm values and commit
